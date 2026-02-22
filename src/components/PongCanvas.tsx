@@ -4,20 +4,32 @@ import { CANVAS_WIDTH, CANVAS_HEIGHT } from "../engine/constants"
 
 export default function PongCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const engineRef = useRef(new GameEngine())
+  const engineRef = useRef<GameEngine | null>(null)
+  const animationRef = useRef<number | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
-    const ctx = canvas?.getContext("2d")
-    if (!canvas || !ctx) return
+    if (!canvas) return
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    // Create engine once
+    engineRef.current = new GameEngine()
 
     const loop = () => {
       const engine = engineRef.current
+      if (!engine) return
+
       engine.update()
 
+      // Clear canvas
       ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
-      // Draw paddles
+      // Set drawing color
+      ctx.fillStyle = "white"
+
+      // Draw left paddle
       ctx.fillRect(
         engine.leftPaddle.position.x,
         engine.leftPaddle.position.y,
@@ -25,6 +37,7 @@ export default function PongCanvas() {
         engine.leftPaddle.height
       )
 
+      // Draw right paddle
       ctx.fillRect(
         engine.rightPaddle.position.x,
         engine.rightPaddle.position.y,
@@ -43,10 +56,16 @@ export default function PongCanvas() {
       )
       ctx.fill()
 
-      requestAnimationFrame(loop)
+      animationRef.current = requestAnimationFrame(loop)
     }
 
     loop()
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
   }, [])
 
   return (
@@ -54,7 +73,10 @@ export default function PongCanvas() {
       ref={canvasRef}
       width={CANVAS_WIDTH}
       height={CANVAS_HEIGHT}
-      style={{ background: "black" }}
+      style={{
+        background: "black",
+        display: "block"
+      }}
     />
   )
 }

@@ -1,4 +1,4 @@
-import { Ball } from "./types"
+import type { Ball } from "./types"
 import { CANVAS_HEIGHT } from "./constants"
 
 export function updateBall(ball: Ball) {

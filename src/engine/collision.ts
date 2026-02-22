@@ -1,4 +1,4 @@
-import { Ball, Paddle } from "./types"
+import type { Ball, Paddle } from "./types"
 
 export function checkPaddleCollision(ball: Ball, paddle: Paddle) {
   return (

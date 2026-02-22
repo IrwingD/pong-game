@@ -1,4 +1,4 @@
-import { Ball, Paddle } from "./types"
+import type { Ball, Paddle } from "./types"
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
